@@ -16,12 +16,18 @@
         // $sql1 = "INSERT INTO categories (`name`, slug, classname) VALUES ('敲', 'uu', 'fc-uu')";
         // $conn = mysqli_connect(DB_HOST, DB_USER, DB_PWD, DB_NAME);        
         // $res = mysqli_query($conn, $sql1);
-        $res = opt($sql1);
+        $res1 = opt($sql1);
+
+        $sql2 = "SELECT `id` FROM categories  where `name` = '{$name}'";
+        $res2 = select($sql2);
+        // var_dump($res2);
         // var_dump($res);
-        if ($res) {
+        if ($res1) {
             $response['code'] = 1;
             $response['msg'] = '操作成功';
+            $response['id'] = $res2[0]['id'];
         }
+
     }
     header('content-type:application/json');
     echo json_encode($response);

@@ -37,11 +37,11 @@
           <button class="btn btn-danger btn-sm">批量删除</button>
         </div>
         <ul class="pagination pagination-sm pull-right">
-          <li><a href="#">上一页</a></li>
-          <li><a href="#">1</a></li>
+          <li id="prev_page"><a href="#">上一页</a></li>
+          <!-- <li><a href="#">1</a></li>
           <li><a href="#">2</a></li>
-          <li><a href="#">3</a></li>
-          <li><a href="#">下一页</a></li>
+          <li><a href="#">3</a></li> -->
+          <li id="next_page"><a href="#">下一页</a></li>
         </ul>
       </div>
       <table class="table table-striped table-bordered table-hover">
@@ -57,7 +57,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr class="danger">
+          <!-- <tr class="danger">
             <td class="text-center"><input type="checkbox"></td>
             <td>大大</td>
             <td>楼主好人，顶一个</td>
@@ -92,7 +92,7 @@
               <a href="post-add.html" class="btn btn-warning btn-xs">驳回</a>
               <a href="javascript:;" class="btn btn-danger btn-xs">删除</a>
             </td>
-          </tr>
+          </tr> -->
         </tbody>
       </table>
     </div>
@@ -137,8 +137,108 @@
   </div> -->
   <?php $current_page = 'comments'; ?>
   <?php require_once './public/_aside.php' ?>
-  <script src="../static/assets/vendors/jquery/jquery.js"></script>
+  <!-- <script src="../static/assets/vendors/jquery/jquery.js"></script>
   <script src="../static/assets/vendors/bootstrap/js/bootstrap.js"></script>
+  <script src="../static/assets/vendors/twbs-pagination/jquery.twbsPagination.min.js"></script> -->
   <script>NProgress.done()</script>
+  <!-- <script src="../static/assets/vendors/art-template/template-web.js"></script> -->
+    <script src="../static/assets/vendors/require/require.js" data-main="../static/assets/js/comments.js"></script>
+  <script type="art-template" id="template">
+  {{ each data val}}
+  <tr>
+    <td class="text-center"><input type="checkbox"></td>
+    <td>{{ val.author }}</td>
+    <td>{{ val.content }}</td>
+    <td>《{{ val.title }}》</td>
+    <td>{{ val.created }}</td>
+    <td>
+      {{ if val.status == 'held'}}
+        未审核
+      {{ else if val.status == 'rejected' }}
+        已准许
+      {{ else if val.status == 'approved' }}
+        已拒绝
+      {{ else if val.status == 'trashed' }}
+        已删除
+      {{ /if }}
+    </td>
+    <td class="text-center">
+      <a href="post-add.html" class="btn btn-warning btn-xs">驳回</a>
+      <a href="javascript:;" class="btn btn-danger btn-xs">删除</a>
+    </td>
+  </tr>
+  {{ /each }}
+  </script>
+  <script>
+    // $(function () {
+    // var currentPage = 1;
+    // var pageSize = 10;
+    // var pageCount;
+      
+    //   getCommentsData();
+    //   function getCommentsData() {
+    //     $.ajax({
+    //     type: "post",
+    //     url: "api/_getCommentsData.php",
+    //     data: {
+    //       currentPage: currentPage,
+    //       pageSize: pageSize
+    //     },
+    //     dataType: "json",
+    //     success: function (res) {
+    //       // console.log(res);
+    //       if (res.code == 1) {
+    //         pageCount = res.pageCount;
+            // console.log(pageCount);
+            // var data = res.data;
+          //   $.each(data, function (i, e) {
+          //     var html = `<tr class="danger">
+          //   <td class="text-center"><input type="checkbox"></td>
+          //   <td>${e.author}</td>
+          //   <td>${e.content}</td>
+          //   <td>《${e.title}》</td>
+          //   <td>${e.created}</td>
+          //   <td>${e.status}</td>
+          //   <td class="text-center">
+          //     <a href="post-add.html" class="btn btn-info btn-xs">批准</a>
+          //     <a href="javascript:;" class="btn btn-danger btn-xs">删除</a>
+          //   </td>
+          // </tr>`
+          // var html = template("template", res);
+          // console.log(html);
+          // console.log(res.data);
+          // $('tbody').html(html);
+          // $('tbody').append(html);
+            // });
+
+    //       $('.pagination').twbsPagination({
+    //       totalPages: pageCount,
+    //       visiblePages: 7,
+    //       onPageClick: function (event, page) {
+    //         currentPage = page;
+    //         getCommentsData();
+    //     }
+    //   });
+    //       }
+    //     }
+    //   });
+    //   };
+
+    // });
+
+            // for (var i = 1; i <= 10 ;i++) {
+            //   var li = $('<li class="item"></li>');
+            //   var a = $('<a href="#"></a>');
+            //   a.text(i);
+            //   li.attr('data-page', i);
+            //   li.append(a);
+            //   li.insertBefore('#next_page');
+            //   $('.pagination').on('click', '.item', function () {
+            //     $(this).addClass('active').siblings('li').removeClass('active');
+            //   });
+            // }
+
+  </script>
+
 </body>
 </html>

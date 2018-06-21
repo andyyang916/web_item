@@ -57,7 +57,7 @@
         <div class="col-md-8">
           <div class="page-action">
             <!-- show when multiple checked -->
-            <a class="btn btn-danger btn-sm" href="javascript:;" style="display: none">批量删除</a>
+            <a class="btn btn-danger btn-sm" id="del_tr" href="javascript:;" style="display: none">批量删除</a>
           </div>
           <table class="table table-striped table-bordered table-hover">
             <thead>
@@ -159,14 +159,14 @@
           var str = "";
           if (response.code == 1) {
           $.each(response.cateRes, function (i, e) {
-            str += `<tr>
+            str += `<tr category-id="${e.id}">
               <td class="text-center"><input type="checkbox"></td>
               <td>${e.name}</td>
               <td>${e.slug}</td>
               <td>${e.classname}</td>
               <td class="text-center">
                 <a href="javascript:;" class="btn btn-info btn-xs" id="edit" category-id="${e.id}">编辑</a>
-                <a href="javascript:;" class="btn btn-danger btn-xs" id="delete" category-id="${e.id}">删除</a>
+                <a href="javascript:;" class="btn btn-danger btn-xs" id="delete" >删除</a>
               </td>
             </tr>`
           });
@@ -206,13 +206,32 @@
             data: $('#addForm').serialize(),
             success: function (response) {
               if (response.code == 1) {
-                location.reload();
+                // location.reload();
+              var str = `<tr category-id="${response.id}">
+              <td class="text-center"><input type="checkbox"></td>
+              <td>${name}</td>
+              <td>${slug}</td>
+              <td>${classname}</td>
+              <td class="text-center">
+                <a href="javascript:;" class="btn btn-info btn-xs" id="edit" category-id="${response.id}">编辑</a>
+                <a href="javascript:;" class="btn btn-danger btn-xs" id="delete" >删除</a>
+              </td>
+              </tr>`
+              $(str).appendTo($('tbody'));     
+              $('#btn-add').hide();
+              $('#btn-edit').show();
+              $('#btn-cancel').show();
+              $('#name').val('');
+              $('#slug').val('');
+              $('#classname').val('');                      
               }
             }
           });
       });
-      
+
+      var currentRow;      
       $('tbody').on('click', '#edit', function () {
+        currentRow = $(this).parents('tr');
         $('#btn-add').hide();
         $('#btn-edit').show();
         $('#btn-cancel').show();
@@ -222,6 +241,7 @@
         var categoryId = $(this).attr('category-id');
         $('#btn-edit').attr('categoryId', categoryId);
       });
+
 
       $('#btn-edit').on('click', function () {
         var categoryId = $(this).attr('categoryId');        
@@ -234,34 +254,99 @@
           dataType: "json",
           success: function (response) {
             if (response.code == 1) {
-              location.reload();
+              $('#btn-add').show();
+              $('#btn-edit').hide();
+              $('#btn-cancel').hide();  
+              var name = $('#name').val();
+              var slug = $('#slug').val();
+              var classname = $('#classname').val();   
+              $('#name').val('');
+              $('#slug').val('');
+              $('#classname').val('');         
+              currentRow.children().eq(1).text(name);
+              currentRow.children().eq(2).text(slug);
+              currentRow.children().eq(3).text(classname);
             }
           }
         });
       });
       
       $('#btn-cancel').on('click', function () {
+        $('#btn-add').show();
+        $('#btn-edit').hide();
+        $('#btn-cancel').hide();
         $('#name').val('');
         $('#slug').val('');
         $('#classname').val('');        
       });
 
       $('tbody').on('click', '#delete', function () {
-        var categoryId = $(this).attr('category-id');
+        var row = $(this).parents('tr');
+        var categoryId = row.attr('category-id');
         // console.log(categoryId);
         $.ajax({
           type: "post",
           url: "./api/_deleteCategory.php",
-          data: "categoryId=" + categoryId,
+          // data: "categoryId=" + categoryId,
+          data: {categoryId: categoryId},
           dataType: "json",
           success: function (response) {
             if (response.code == 1) {
-              location.reload();
+              row.remove();
             }
           }
         });
       });
     });
+
+      $('thead input[type=checkbox]').on('change', function () {
+        var all = $(this).prop('checked');
+        $('tbody input[type=checkbox]').prop('checked', all);
+        if (all) {
+          $('#del_tr').show();
+        } else {
+          $('#del_tr').hide();
+        }
+      });
+
+      $('tbody').on('change', 'input[type=checkbox]', function () {
+        var all = $('thead input[type=checkbox]');
+        var cks = $('tbody input[type=checkbox]');
+
+        // 这句是if优化方法， prop属性设置 'checked', true 或 'checked', false
+        all.prop('checked', cks.size() == $('tbody input[type=checkbox]:checked').size())
+
+        if ($('tbody input[type=checkbox]:checked').size() >= 2) {
+          $('#del_tr').show();          
+        } else {
+          $('#del_tr').hide();          
+        }
+      });
+
+      $('#del_tr').on('click', function () {
+        var cks = $('tbody input[type=checkbox]:checked');
+        var cksRow = cks.parents('tr');
+        // console.log(cks);
+        // console.log(cksRow);
+        var ids = [];
+        $.each(cks, function (index, el) {
+          var id = $(el).parents('tr').attr('category-id');
+          ids.push(id);
+        }) 
+        // console.log(ids);
+        $.ajax({
+          type: "post",
+          url: "api/_delcategories.php",
+          data: {ids: ids},
+          dataType: "json",
+          success: function (response) {
+            if (response.code == 1) {
+              // location.reload();
+              cksRow.remove();
+            }
+          }
+        });
+      });
 
 
   </script>

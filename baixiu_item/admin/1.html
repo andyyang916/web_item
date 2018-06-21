@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    
+    <script>
+        // 1.定义全局变量，在一个函数内重新赋值，然后在这个函数调用另外一个函数，另一个函数的这个值获取不到前一个函数的值
+        var a;
+        fn();
+        function fn() {
+            a = 4;
+            fn1();
+        }
+        function fn1() {
+            console.log(a)
+        }
+        
+        // var a = 1;
+        // fn();
+        // function fn() {
+        //     var a = 4;
+        //     function fn1() {
+        //     console.log(a)
+        //     }
+        //     fn1();
+        // }
+
+
+        
+        // var a = 1;
+        // fn();
+        // function fn() {
+        //     a = 4;
+        //     t1 = setTimeout(function(){
+        //         console.log(a);
+        //     }, 2000);
+        // }
+
+        // var a = 1;
+        // fn();
+        // function fn() {
+        //     a = 4;
+        //     t1 = setInterval(function(){
+        //         console.log(a);
+        //     }, 2000);
+        // }        
+        // function fn1() {
+        //     console.log(a);
+        // }
+    </script>
+</body>
+</html>

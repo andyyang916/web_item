@@ -2,7 +2,7 @@
     require_once '../../static/config.php';
     require_once '../../static/select.php';
 
-    $sql = "SELECT * FROM categories ORDER BY id asc";
+    $sql = "SELECT * FROM categories";
     $cateRes = select($sql);
     // print_r($loginRes);
     $response = ['code' => 0, 'msg' => '操作失败'];

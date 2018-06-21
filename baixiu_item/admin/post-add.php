@@ -29,14 +29,14 @@
       <!-- <div class="alert alert-danger">
         <strong>错误！</strong>发生XXX错误
       </div> -->
-      <form class="row">
+      <form id="data-form" class="row">
         <div class="col-md-9">
           <div class="form-group">
             <label for="title">标题</label>
             <input id="title" class="form-control input-lg" name="title" type="text" placeholder="文章标题">
           </div>
           <div class="form-group">
-            <label for="content">标题</label>
+            <label for="content">内容</label>
             <textarea id="content" class="form-control input-lg" name="content" cols="30" rows="10" placeholder="内容"></textarea>
           </div>
         </div>
@@ -71,7 +71,8 @@
             </select>
           </div>
           <div class="form-group">
-            <button class="btn btn-primary" type="submit">保存</button>
+            <input id="btn-save" class="btn btn-primary" type="button" value="保存">
+            <!-- <button class="btn btn-primary" type="submit">保存</button> -->
           </div>
         </div>
       </form>
@@ -120,5 +121,68 @@
   <script src="../static/assets/vendors/jquery/jquery.js"></script>
   <script src="../static/assets/vendors/bootstrap/js/bootstrap.js"></script>
   <script>NProgress.done()</script>
+  <script src="../static/assets/vendors/ckeditor/ckeditor.js"></script>
+  <script>
+    $(function () {
+      // 实现文件的上传功能
+      $('#feature').on('change', function () {
+        // 文件上传，获取到上传的文件
+        // console.dir(this);
+        // this下的files[0]就是我们所需要的图片
+        var file = this.files[0];
+        var data = new FormData();
+        data.append("file", file);
+
+        $.ajax({
+          type: "post",
+          url: "api/_uploadFile.php",
+          data: data,
+          contentType: false,
+          processData: false,
+          dataType: "json",
+          success: function (res) {
+            // console.log(res);
+            if (res.code == 1) {
+              $('.help-block').attr('src', res.src).show();
+            }
+          }
+        });
+      })
+
+      // 富文本有格式的文本，运用插件CKEDITOR4
+      // 1.使用富文本的步骤
+      // 引入插件
+      // 准备一个文本域，该文本域需要有id
+      // 调用插件提供的方法，初始化，富文本编辑器
+      // CKEDITOR.replace(对应文本域的id)
+
+      // 富文本编辑器初始化的方法
+      CKEDITOR.replace('content');
+
+      // 给保存按钮注册点击事件
+      $('#btn-save').on('click', function () {
+        // 在收集数据之前，得把富文本编辑器的内容更新到我们的文本域中
+        // 如果要把编辑器中的内容，更新到对应的文本域里面
+        // 需要调用插件提供的一个方法：编辑器对象.updateElement()
+        // 获取编辑器对象：CKEDITOR.instances.初始化的时候所使用的id
+        // console.log(CKEDITOR.instances);
+        CKEDITOR.instances.content.updateElement();
+        
+        // 点击保存按钮，收集表单数据，发送回服务器
+        var data = $('#data-form').serialize();
+        // console.log(data);
+        $.ajax({
+          type: "post",
+          url: "api/_addPost.php",
+          data: data,
+          dataType: "json",
+          success: function (response) {
+            
+          }
+        });
+      });
+      
+    });
+  </script>
 </body>
 </html>
