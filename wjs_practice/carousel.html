@@ -1,0 +1,121 @@
+<html>
+
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<!--标准的视口设置-->
+		<meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=0">
+		<title>carousel</title>
+		<link href="./lib/bootstrap/css/bootstrap.css" rel="stylesheet">
+		<script src="lib/jquery/jquery.js" type="text/javascript" charset="utf-8"></script>
+		<script src="lib/bootstrap/js/bootstrap.js" type="text/javascript" charset="utf-8"></script>
+		<style type="text/css">
+			.pcImg {
+				width: 100%;
+				height: 410px;
+				display: block;
+				background-position: center center; 
+				background-size: cover;
+			}
+			.mobileImg {
+				width: 100%;
+				display: block;
+			}
+			.mobileImg > img {
+				width: 100%;
+				display: block;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+			<!-- Indicators -->
+			<ol class="carousel-indicators">
+				<li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+				<li data-target="#carousel-example-generic" data-slide-to="1"></li>
+				<li data-target="#carousel-example-generic" data-slide-to="2"></li>
+				<li data-target="#carousel-example-generic" data-slide-to="3"></li>
+				
+			</ol>
+
+			<!-- Wrapper for slides -->
+			<div class="carousel-inner" role="listbox">
+				<div class="item active" data-small-img="images/slide_01_640x340.jpg" data-large-img="images/slide_01_2000x410.jpg">
+				</div>
+				<div class="item" data-small-img="images/slide_02_640x340.jpg" data-large-img="images/slide_02_2000x410.jpg">
+				</div>
+				<div class="item" data-small-img="images/slide_03_640x340.jpg" data-large-img="images/slide_03_2000x410.jpg">
+				</div>
+				<div class="item" data-small-img="images/slide_04_640x340.jpg" data-large-img="images/slide_04_2000x410.jpg">
+				</div>
+			</div>
+
+			<!-- Controls -->
+			<a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+				<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+				<span class="sr-only">Previous</span>
+			</a>
+			<a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+				<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+				<span class="sr-only">Next</span>
+			</a>
+		</div>
+		<script type="text/javascript">
+			$(function () {
+//			获取所有的li项目
+			var items = $('.carousel-inner .item');
+			$(window).on('resize', function () {
+				var width = $(this).width();
+//				console.log(width);
+//			判断屏幕的宽度
+			if (width >= 768) {
+				console.log(888);
+//				为每一个li增加子元素 循环遍历
+				$(items).each(function (index, value) {
+//					获得当前的li
+				var item = $(this);
+//				从当前的自定义的属性中,获取图片的路径
+				var imgSrc = item.data('largeImg');
+//				console.log(imgSrc);
+				item.html($('<a href="javascript:;" class="pcImg"></a>').css("backgroundImage", "url('"+imgSrc+"')"));
+				});
+			} else {
+				$(items).each(function (index, value) {
+//					获得当前的li
+				var item = $(this);
+//				从当前的自定义的属性中,获取图片的路径
+				var imgSrc = item.data('smallImg');
+				console.log(imgSrc);
+				item.html('<a href="javascript:;" class="mobileImg"><img src="'+ imgSrc +'"></a>');
+//              item.html('<a href="javascript:;" class="mobileImg"><img src="'+imgSrc+'" alt="..."></a>');				
+				});				
+			}
+			}).trigger('resize');	
+			
+//			添加移动端的滑动操作
+			var startX, endX;
+			var carouselInner = $('.carousel-inner')[0];
+//			获取当前轮播图
+			var carousel = $('.carousel');
+			carouselInner.addEventListener('touchstart', function (e) {
+				startX = e.targetTouches[0].clientX;
+				console.log(startX);
+			})
+			carouselInner.addEventListener('touchend', function (e) {
+				endX = e.changedTouches[0].clientX;
+//				console.log(endX);
+				if (endX - startX > 0) {
+//					上一张
+					carousel.carousel('prev');
+				} else if (endX - startX < 0) {
+//					下一张
+					carousel.carousel('next');
+				}
+			})
+			});
+
+		</script>
+	</body>
+
+</html>

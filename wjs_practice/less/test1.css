@@ -1,0 +1,7 @@
+container {
+  background: red;
+  background-blend-mode: jj;
+}
+.b {
+  width: 10px;
+}
